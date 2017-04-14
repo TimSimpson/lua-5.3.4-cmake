@@ -54,7 +54,6 @@ add_library(lua
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ltablib.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ltm.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ltm.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lua.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/luac.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lualib.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lundump.c
@@ -66,6 +65,12 @@ add_library(lua
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lzio.h
 )
 
+if (BUILD_SHARED_LIBS)
+    target_compile_definitions(lua
+        PUBLIC
+            LUA_BUILD_AS_DLL=1
+    )
+endif()
 
 target_include_directories(lua
     PUBLIC
@@ -85,8 +90,12 @@ install(EXPORT lua_config DESTINATION share/lua/cmake)
 
 export(TARGETS lua FILE lua_config.cmake)
 
-add_executable(luac ${CMAKE_CURRENT_SOURCE_DIR}/src/luac.c)
-target_link_libraries(luac lua)
+# Probably missing something obvious but it seems like luac requires
+# non-exported functions to compile correctly.
+if (NOT BUILD_SHARED_LIBS)
+    add_executable(luac ${CMAKE_CURRENT_SOURCE_DIR}/src/luac.c)
+    target_link_libraries(luac lua)
+endif()
 
 add_executable(lua_interpretter ${CMAKE_CURRENT_SOURCE_DIR}/src/lua.c)
 target_link_libraries(lua_interpretter lua)
