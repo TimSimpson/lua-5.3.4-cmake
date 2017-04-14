@@ -1,4 +1,4 @@
-project(Lua-5.3.4 CXX)
+project(Lua-5.3.4 C CXX)
 cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
 
 add_library(lua
@@ -55,10 +55,7 @@ add_library(lua
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ltm.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/ltm.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lua.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lua.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/lua.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/luac.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/luaconf.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lualib.h
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lundump.c
     ${CMAKE_CURRENT_SOURCE_DIR}/src/lundump.h
@@ -73,9 +70,9 @@ add_library(lua
 target_include_directories(lua
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>
     PRIVATE
-        $<INSTALL_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
+        $<INSTALL_INTERFACE:src>
 )
 
 install(TARGETS lua EXPORT lua_config
@@ -88,5 +85,9 @@ install(EXPORT lua_config DESTINATION share/lua/cmake)
 
 export(TARGETS lua FILE lua_config.cmake)
 
-add_executable(luac ${CMAKE_CURRENT_SOURCE_DIR}/src/luac.c
-target_link_libraries(LogDemo Lp3_Core)
+add_executable(luac ${CMAKE_CURRENT_SOURCE_DIR}/src/luac.c)
+target_link_libraries(luac lua)
+
+add_executable(lua_interpretter ${CMAKE_CURRENT_SOURCE_DIR}/src/lua.c)
+target_link_libraries(lua_interpretter lua)
+set_property(TARGET lua_interpretter PROPERTY OUTPUT_NAME "lua")
