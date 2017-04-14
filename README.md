@@ -5,6 +5,7 @@ This is a modified copy of [Lua 5.3.4](https://www.lua.org/download.html) (found
 * A CMakeLists.txt file was been added
 * Lua's public interface (lua.h and friends) was moved from `src` `include`.
 
+This repo is not endorsed or supported by [Lua's original authors](https://www.lua.org/authors.html). Lua is released under the [https://www.lua.org/license.html](MIT license).
 
 ## Original Readme Text:
 
